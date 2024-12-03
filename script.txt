@@ -1,0 +1,31 @@
+# Installing Nginx and Grafana to make Custome AMI 
+#Update package lists and install nginx
+apt-get update
+apt-get install -y nginx
+
+# Enable Nginx to start on boot
+systemctl enable nginx
+
+#Install the prerequisite packages of Grafana:
+sudo apt-get install -y apt-transport-https software-properties-common wget
+
+#Import the GPG key:
+sudo mkdir -p /etc/apt/keyrings/
+wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+
+#To add a repository for stable releases, run the following command:
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+
+# Updates the list of available packages
+sudo apt-get update
+
+# Installs the latest OSS release of Grafana:
+sudo apt-get install grafana
+
+#To start the service, run the following commands:
+sudo systemctl daemon-reload
+sudo systemctl start grafana-server
+
+#To configure the Grafana server to start at boot, run the following command:
+#Grafana will be accessed from <public-ip>:3000 
+sudo systemctl enable grafana-server.service
